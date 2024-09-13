@@ -380,4 +380,13 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
             .send();
         return response.data;
     }
+
+    async getEmbeddings() {
+        const response = await this.request(this.getEmbeddingsUrl)
+            .method("GET")
+            .headers({ "Content-Type": "application/json" })
+            .auth(this.authType, this.authToken)
+            .send();
+        return response.data;
+    }
 }
