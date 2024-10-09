@@ -38,6 +38,10 @@
       {
         "command": "alitacode.initAlita",
         "title": "Alita: Init"
+      },
+      {
+        "command": "alitacode.getAvailableAIModels",
+        "title": "Alita: Get available AI models from the server"
       }
     ],
     "menus": {
@@ -104,32 +108,8 @@
             "default": 1,
             "description": "Project Id in Carrier, ignored for OpenAI and AI Dial"
           },
-          "alitacode.integrationUid": {
-            "order": 4,
-            "type": "string",
-            "default": "Integration UUID goes here",
-            "description": "AI integration Id from Alita Backened, ignored for OpenAI"
-          },
-          "alitacode.LLMModelName": {
-            "order": 5,
-            "type": "string",
-            "default": "gpt-4",
-            "enum": [
-              "gpt-35-turbo",
-              "gpt-35-turbo-16k",
-              "gpt-4",
-              "gpt-4-0125-preview"
-            ],
-            "description": "Model name used for local prompts, this is deployment name, and it can be different from case to case"
-          },
-          "alitacode.customModelName": {
-            "order": 6,
-            "type": "string",
-            "default": "",
-            "description": "Custom model name used for local prompts"
-          },
           "alitacode.displayType": {
-            "order": 7,
+            "order": 4,
             "type": "string",
             "default": "append",
             "enum": [
@@ -141,17 +121,47 @@
             "description": "Select the default display mode for the predictions"
           },
           "alitacode.verifySsl": {
-            "order": 8,
+            "order": 5,
             "label": "Verify SSL",
             "type": "boolean",
             "default": true,
             "description": "Verify LLM service provider certificate"
           },
           "alitacode.enable": {
-            "order": 9,
+            "order": 6,
             "type": "boolean",
             "default": true,
             "description": "Enable/disable this extension"
+          }
+        }
+      },
+      {
+        "title": "Integration Settings",
+        "properties": {
+          "alitacode.selectIntegration": {
+            "order": 1,
+            "type": "string",
+            "default": "Please use [Click here to select] button",
+            "enum": [
+              "Please use [Click here to select] button"
+            ],
+            "markdownDescription": "[Click here to select](command:alitacode.getAvailableAIModels)"
+          },
+          "alitacode.LLMModelName": {
+            "order": 2,
+            "type": "string",
+            "default": "",
+            "markdownDescription": "Model name used for local prompts, this is deployment name, and it can be different from case to case"
+          },
+          "alitacode.integrationName": {
+            "order": 3,
+            "type": "string"
+          },
+          "alitacode.integrationUid": {
+            "order": 4,
+            "type": "string",
+            "default": "Integration UUID goes here",
+            "description": "AI integration Id from Alita Backened, ignored for OpenAI"
           }
         }
       },

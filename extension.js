@@ -24,6 +24,7 @@ const {
   initAlita,
   syncPrompts,
   onConfigChange,
+  getAvailableAIModels
 } = require("./commands");
 const OutputService = require("./services/output.service");
 
@@ -60,7 +61,15 @@ async function activate(context) {
     addExample.bind(null, workspaceService.promptsList)
   );
 
-  const addGoodPredictionSub = vscode.commands.registerCommand(COMMAND.ADD_GOOD_PREDICTION, addGoodPrediction);
+  const addGoodPredictionSub = vscode.commands.registerCommand(
+    COMMAND.ADD_GOOD_PREDICTION,
+    addGoodPrediction
+  );
+
+  const getAvailableModelsSub = vscode.commands.registerCommand(
+    COMMAND.GET_AVAILABLE_AI_MODELS,
+    getAvailableAIModels
+  );
 
   context.subscriptions.push(predictSub);
   context.subscriptions.push(createPromptSub);
@@ -71,6 +80,7 @@ async function activate(context) {
   context.subscriptions.push(syncPromptsSub);
 
   context.subscriptions.push(OutputService.getChannel());
+  context.subscriptions.push(getAvailableModelsSub);
 
   const api = {
     alitaService,

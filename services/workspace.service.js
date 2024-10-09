@@ -45,13 +45,7 @@ module.exports = class WorkspaceService {
         .get(WORKSPACE.EXTENSION.PARAM.DISPLAY_TYPE),
       LLMmodelName: workspace
         .getConfiguration(WORKSPACE.EXTENSION.NAME)
-        .get(WORKSPACE.EXTENSION.PARAM.CUSTOM_MODEL_NAME) ? 
-        workspace
-        .getConfiguration(WORKSPACE.EXTENSION.NAME)
-        .get(WORKSPACE.EXTENSION.PARAM.CUSTOM_MODEL_NAME) :
-        workspace
-          .getConfiguration(WORKSPACE.EXTENSION.NAME)
-          .get(WORKSPACE.EXTENSION.PARAM.LLM_MODEL_NAME),
+        .get(WORKSPACE.EXTENSION.PARAM.LLM_MODEL_NAME),
       DEFAULT_TOKENS: workspace
         .getConfiguration(WORKSPACE.EXTENSION.NAME)
         .get(WORKSPACE.EXTENSION.PARAM.DEFAULT_TOKENS),
