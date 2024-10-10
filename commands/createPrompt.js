@@ -19,9 +19,9 @@ const {
 } = require("../services");
 const { TEXT } = require("../constants");
 
-module.exports = async function (items) {
+module.exports = async function (items, {promptName= "", promptDescription= "", context="", variables, integration_settings}) {
   const { promptLib, workspacePath } = workspaceService.getWorkspaceConfig();
-  const promptName = await windowService.showInputBox({
+  /*const promptName = await windowService.showInputBox({
     title: TEXT.ENTER_PROMPT_NAME,
   });
   const promptDescription = await windowService.showInputBox({
@@ -29,15 +29,22 @@ module.exports = async function (items) {
   });
   const context = await windowService.showInputBox({
     title: TEXT.ENTER_PROMPT_CONTEXT,
-  });
-  if (!promptName || !promptDescription || !context) return;
+  })
+  if (!promptName || !promptDescription || !context) return;*/
 
   const normalizedPromptName = promptName.replace(/[^\w\d]/g, "_");
   const newPromptFileName = `${normalizedPromptName}.yaml`;
 
+  const promptContent= {context}
+  if(variables){
+    promptContent.variables = variables
+  }
+  if(integration_settings){
+    promptContent.integration_settings = integration_settings
+  }
   await workspaceService.writeContent(
     path.join(workspacePath, promptLib, newPromptFileName),
-    {"context": context}
+    promptContent
   );
   const promptsMapping = await workspaceService.readContent(
     path.join(workspacePath, promptLib, "./prompts.json"),
