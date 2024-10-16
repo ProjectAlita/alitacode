@@ -22,13 +22,32 @@ module.exports = async function () {
   if (selectedModel) {
     const configuration = vscode.workspace.getConfiguration();
     const { label: modelName, description: groupName } = selectedModel;
-    await configuration.update("alitacode.LLMModelName",
-      modelName, vscode.ConfigurationTarget.Workspace);
     const integrationName = await alitaService.getAIModelIntegrationName(groupName, true);
-    await configuration.update("alitacode.integrationName",
-      integrationName.toString(), vscode.ConfigurationTarget.Workspace);
     const uid = await alitaService.getAIModelUid(groupName, true);
-    await configuration.update("alitacode.integrationUid", uid.toString(), vscode.ConfigurationTarget.Workspace);
+    if (vscode.workspace.workspaceFolders) {
+
+      // 2) Getting the Configuration target
+      const target = await vscode.window.showQuickPick(
+        [
+          { label: "User", description: "User Settings", target: vscode.ConfigurationTarget.Global },
+          { label: "Workspace", description: "Workspace Settings", target: vscode.ConfigurationTarget.Workspace }
+        ],
+        { placeHolder: "Select the view to show when opening a window." });
+
+      if (modelName && target) {
+
+        // 3) Update the configuration value in the target
+        await configuration.update("alitacode.LLMModelName", modelName, target.target);       
+        await configuration.update("alitacode.integrationName",integrationName.toString(), target.target );       
+        await configuration.update("alitacode.integrationUid", uid.toString(), target.target);
+      }
+    } else {
+      // 2) Update the configuration value in User Setting in case of no workspace folders
+      await configuration.update("alitacode.LLMModelName", modelName, vscode.ConfigurationTarget.Global);       
+      await configuration.update("alitacode.integrationName",integrationName.toString(),
+       vscode.ConfigurationTarget.Global);       
+      await configuration.update("alitacode.integrationUid", uid.toString(),vscode.ConfigurationTarget.Global);
+    }
     vscode.window.showInformationMessage(`You selected: ${modelName}  [${groupName}]`);
   } else {
     vscode.window.showInformationMessage("Operation cancelled.");

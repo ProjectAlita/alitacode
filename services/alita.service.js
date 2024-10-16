@@ -154,37 +154,4 @@ module.exports = class AlitaService {
       .filter(integration => integration.config.name === integrationConfigName)
       .map(integration => integration.name);
   }
-
-  async getEmbeddings() {
-    return await this.invokeMethod("getEmbeddings", "Get available integrations")
-  }
-
-  async getAIModelNames() {
-    const data = await this.getEmbeddings();
-    const array = [];
-    data.forEach(entry => {
-      if (entry.settings && Array.isArray(entry.settings.models)) {
-        entry.settings.models.forEach(model => {
-          if (model.name && entry.name) {
-            array.push({ [entry.config.name]: model.name });
-          }
-        });
-      }
-    });
-    return array;
-  }
-
-  async getAIModelUid(integrationConfigName) {
-    const data = await this.getEmbeddings();
-    return data
-      .filter(integration => integration.config.name === integrationConfigName)
-      .map(integration => integration.uid);
-  }
-
-  async getAIModelIntegrationName(integrationConfigName) {
-    const data = await this.getEmbeddings();
-    return data
-      .filter(integration => integration.config.name === integrationConfigName)
-      .map(integration => integration.name);
-  }
 };
