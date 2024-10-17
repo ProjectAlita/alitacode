@@ -26,9 +26,10 @@ const {
   onConfigChange,
   getAvailableAIModels
 } = require("./commands");
+import { CreatePromptPanel } from "./panels/CreatePromptPanel";
 const OutputService = require("./services/output.service");
 
-async function activate(context) {
+async function activate(context){
   await vscode.commands.executeCommand("setContext", "alitacode.ExtentablePlatforms", EXTERNAL_PROMPTS_PROVIDERS);
   try {
     await onConfigChange();
@@ -47,9 +48,10 @@ async function activate(context) {
   const syncPromptsSub = vscode.commands.registerCommand(COMMAND.SYNC_PROMPTS, syncPrompts);
 
   const createPromptSub = vscode.commands.registerCommand(
-    COMMAND.CREATE_PROMPT,
-    createPrompt.bind(null, workspaceService.promptsList)
-  );
+      COMMAND.CREATE_PROMPT,
+      () => {
+        CreatePromptPanel.render(context, workspaceService.promptsList);
+      })
 
   const addContextSub = vscode.commands.registerCommand(
     COMMAND.ADD_CONTEXT,
