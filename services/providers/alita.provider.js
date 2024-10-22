@@ -252,7 +252,8 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
     async getPrompts() {
         const response = await this.request(this.getPromptsUrl, {
             params: {
-                offset: 0
+                offset: 0,
+                limit: 1000
             }
         })
             .method("GET")
@@ -296,20 +297,17 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
     }
 
     async getApplications() {
-        const hasCodeTag = await this.checkIfHasCodeTag();
-        if (hasCodeTag) {
-            const response = await this.request(this.getApplicationsUrl, {
-                params: {
-                    tags: this.codeTagId
-                }
-            })
-                .method("GET")
-                .headers({ "Content-Type": "application/json" })
-                .auth(this.authType, this.authToken)
-                .send();
-            return response.data.rows || [];
-        }
-        return []
+        const response = await this.request(this.getApplicationsUrl, {
+            params: {
+                offset: 0,
+                limit: 1000
+            }
+        })
+            .method("GET")
+            .headers({ "Content-Type": "application/json" })
+            .auth(this.authType, this.authToken)
+            .send();
+        return response.data.rows.filter(row => row.tags.some(tag => tag.name === "code")) || [];
     }
 
     async chat({

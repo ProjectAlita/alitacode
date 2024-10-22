@@ -20,7 +20,12 @@ function maskAuthorizationHeader(headers) {
   if (maskedHeaders.Authorization) {
     const token = maskedHeaders.Authorization.split(" ")[1];
     const tokenLength = token.length;
-    const maskedToken = "*".repeat(tokenLength - 4) + token.slice(-4);
+    let maskedToken;
+    if (tokenLength > 4) {
+      maskedToken = "*".repeat(tokenLength - 4) + token.slice(-4);
+    } else {
+      maskedToken = token;
+    }
 
     maskedHeaders.Authorization = `Bearer ${maskedToken}`;
   }
@@ -59,7 +64,7 @@ module.exports = class OutputService {
     this._outputChannel.appendLine(`Headers: ${JSON.stringify(response.headers, null, 2)}`);
 
     if (response.data) {
-      this._outputChannel.appendLine(`Data: ${JSON.stringify(response.data, null, 2)}`);
+    this._outputChannel.appendLine(`Data: ${JSON.stringify(response.data, null, 2)}`);
     }
   }
 

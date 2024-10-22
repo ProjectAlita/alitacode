@@ -24,11 +24,16 @@ module.exports = async function () {
     const { label: modelName, description: groupName } = selectedModel;
     await configuration.update("alitacode.LLMModelName",
       modelName, vscode.ConfigurationTarget.Workspace);
+    await configuration.update("alitacode.LLMModelName",
+      modelName, vscode.ConfigurationTarget.Global);
     const integrationName = await alitaService.getAIModelIntegrationName(groupName, true);
     await configuration.update("alitacode.integrationName",
       integrationName.toString(), vscode.ConfigurationTarget.Workspace);
+    await configuration.update("alitacode.integrationName",
+      integrationName.toString(), vscode.ConfigurationTarget.Global);
     const uid = await alitaService.getAIModelUid(groupName, true);
     await configuration.update("alitacode.integrationUid", uid.toString(), vscode.ConfigurationTarget.Workspace);
+    await configuration.update("alitacode.integrationUid", uid.toString(), vscode.ConfigurationTarget.Global);
     vscode.window.showInformationMessage(`You selected: ${modelName}  [${groupName}]`);
   } else {
     vscode.window.showInformationMessage("Operation cancelled.");
