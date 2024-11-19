@@ -2,7 +2,7 @@
   "name": "alitacode",
   "displayName": "Alita Code",
   "description": "Your Virtual Coding Assistant, to help you write better code faster",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "icon": "images/128x128.png",
   "publisher": "ProjectAlita",
   "engines": {
