@@ -61,6 +61,7 @@ module.exports = {
     ADD_CONTEXT: "alitacode.addContext",
     CREATE_PROMPT: "alitacode.createPrompt",
     PREDICT: "alitacode.predict",
+    PREDICT_FILE_TREE: "alitacode.predictFileTree",
     OPEN_SETTINGS: "workbench.action.openSettings",
     ADD_GOOD_PREDICTION: "alitacode.addGoodPrediction",
     GET_AVAILABLE_AI_MODELS: "alitacode.getAvailableAIModels",
