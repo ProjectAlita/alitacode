@@ -16,6 +16,7 @@ const addContext = require("./addContext");
 const addExample = require("./addExample");
 const createPrompt = require("./createPrompt");
 const predict = require("./predict");
+const predictFileTree = require("./predictFileTree");
 const addGoodPrediction = require("./addGoodPrediction");
 const suggest = require("./suggest");
 const initAlita = require("./initAlita");
@@ -29,6 +30,7 @@ module.exports = {
   addContext,
   createPrompt,
   predict,
+  predictFileTree,
   addGoodPrediction,
   suggest,
   initAlita,

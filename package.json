@@ -20,6 +20,10 @@
   "contributes": {
     "commands": [
       {
+        "command": "alitacode.predictFileTree",
+        "title": "Alita: Predict"
+      },
+      {
         "command": "alitacode.predict",
         "title": "Alita: Predict"
       },
@@ -45,11 +49,21 @@
       }
     ],
     "menus": {
+      "explorer/context": [
+        {
+          "submenu": "alitacode.explorerSubmenu"
+        }
+      ],
       "editor/context": [
         {
           "when": "editorFocus && !editorReadonly",
           "submenu": "alitacode.submenu",
           "group": "Alita"
+        }
+      ],
+      "alitacode.explorerSubmenu": [
+        {
+          "command": "alitacode.predictFileTree"
         }
       ],
       "alitacode.submenu": [
@@ -78,6 +92,10 @@
     "submenus": [
       {
         "id": "alitacode.submenu",
+        "label": "Alita"
+      },
+      {
+        "id": "alitacode.explorerSubmenu",
         "label": "Alita"
       }
     ],

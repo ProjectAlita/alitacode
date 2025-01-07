@@ -20,12 +20,15 @@ const {
   addExample,
   createPrompt,
   predict,
+  predictFileTree,
   addGoodPrediction,
   initAlita,
   syncPrompts,
   onConfigChange,
   getAvailableAIModels,
 } = require("./commands");
+import path from "path";
+import fs from "fs";
 import { CreatePromptPanel } from "./panels/CreatePromptPanel";
 const OutputService = require("./services/output.service");
 
@@ -42,6 +45,10 @@ async function activate(context) {
   });
 
   const predictSub = vscode.commands.registerCommand(COMMAND.PREDICT, predict.bind(null));
+
+  const predictFileTreeSub = vscode.commands.registerCommand(COMMAND.PREDICT_FILE_TREE, (...args) =>
+    predictFileTree(...args)
+  );
 
   const initAlitaSub = vscode.commands.registerCommand(COMMAND.INIT_ALITA, initAlita);
 
@@ -66,6 +73,7 @@ async function activate(context) {
   const getAvailableModelsSub = vscode.commands.registerCommand(COMMAND.GET_AVAILABLE_AI_MODELS, getAvailableAIModels);
 
   context.subscriptions.push(predictSub);
+  context.subscriptions.push(predictFileTreeSub);
   context.subscriptions.push(createPromptSub);
   context.subscriptions.push(addContextSub);
   context.subscriptions.push(addExampleSub);
