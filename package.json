@@ -101,7 +101,7 @@
             "order": 2,
             "type": "string",
             "default": "",
-            "pattern": "(^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$)",
+            "pattern": "(^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]{86}$)",
             "patternErrorMessage": "Token has incorrect format"
           },
           "alitacode.projectId": {

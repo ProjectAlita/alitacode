@@ -20,7 +20,7 @@ const https = require("https");
 
 function parseJwt(token) {
   try {
-    if (token && /(^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$)/.test(
+    if (token && /(^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]{86}$)/.test(
         token)) {
       var base64Url = token.split(".")[1];
       var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
