@@ -100,7 +100,9 @@
           "alitacode.LLMAuthToken": {
             "order": 2,
             "type": "string",
-            "default": ""
+            "default": "",
+            "pattern": "(^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]{86}$)",
+            "patternErrorMessage": "Token has incorrect format"
           },
           "alitacode.projectId": {
             "order": 3,
