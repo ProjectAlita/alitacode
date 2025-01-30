@@ -20,39 +20,51 @@ const https = require("https");
 
 function parseJwt(token) {
   try {
-    if (token && /(^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]{86}$)/.test(
-        token)) {
-      var base64Url = token.split(".")[1];
-      var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      var jsonPayload = decodeURIComponent(
+    if (token && /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/.test(token)) {
+      const parts = token.split(".");
+      const base64UrlToJson = (base64Url) => {
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
           atob(base64).split("").map(function (c) {
             return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-          }).join(""));
+          }).join("")
+        );
+        return JSON.parse(jsonPayload);
+      };
 
-      return JSON.parse(jsonPayload);
-    } else throw Error("Alita Code: Invalid LLMAuth JWT token")
-  } catch(e) {
-    const message = "Alita Code: Invalid LLMAuth JWT token"
-    vscode.window.showErrorMessage(message);
-    return null;
+      const header = base64UrlToJson(parts[0]);
+      const payload = base64UrlToJson(parts[1]);
+      const signature = parts[2]; // Signature is not decoded as it is used for verification
+
+      return {
+        header,
+        payload,
+        signature
+      };
+    } else {
+      vscode.window.showErrorMessage("ELITEA Code: Invalid LLMAuth JWT token");
+    }
+  } catch (e) {
+    vscode.window.showErrorMessage("ELITEA Code: Invalid LLMAuth JWT token");
   }
 }
 
 function verifyToken(parsedToken) {
   if(parsedToken) {
-    if (parsedToken.expires === undefined) return;
-    if (parsedToken.expires === "null" || parsedToken.expires === null) {
-      vscode.window.showInformationMessage("Alita Code: LLMAuth Token is valid");
+    if (parsedToken.payload.expires === undefined) return;
+    if (parsedToken.payload.expires === "null" || parsedToken.payload.expires === null) {
+      vscode.window.showInformationMessage("ELITEA Code: LLMAuth Token is valid");
       return;
     }
     let currentDate = new Date();
-    let parsedDate = new Date(parsedToken.expires);
-    if (currentDate.getTime() > parsedDate.getTime()) {
-      const message = "Alita Code: LLMAuth Token expired"
+    let parsedDate = new Date(parsedToken.payload.expires);
+    let currentDateUTC = new Date(currentDate.getTime() + currentDate.getTimezoneOffset() * 60000);
+    if (currentDateUTC.getTime() > parsedDate.getTime()) {
+      const message = "ELITEA Code: LLMAuth Token expired"
       console.error(message);
       vscode.window.showErrorMessage(message);
     } else {
-      const message = `Alita Code: LLMAuth Token valid till ${parsedDate}`
+      const message = `ELITEA Code: LLMAuth Token valid till ${parsedDate}`
       console.log(message);
       vscode.window.showInformationMessage(message);
     }
