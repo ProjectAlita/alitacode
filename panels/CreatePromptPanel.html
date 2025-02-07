@@ -1,39 +1,83 @@
-<vscode-text-field name="promptName">Name</vscode-text-field>
-<br />
-<vscode-text-field name="promptDescription">Description</vscode-text-field>
-<br />
-<vscode-text-area name="context" rows="4" cols="50">Context</vscode-text-area>
-<br />
-<label>
-  Variables
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Prompt Dialog</title>
+  <style>
+    :root {
+      --header-bg-color: #f0f0f0; /* Default background color */
+      --header-text-color: #333; /* Default text color */
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --header-bg-color: #333; /* Dark mode background color */
+        --header-text-color: #f0f0f0; /* Dark mode text color */
+      }
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --header-bg-color: #f0f0f0; /* Light mode background color */
+        --header-text-color: #333; /* Light mode text color */
+      }
+    }
+
+    #variables [cell-type="columnheader"] {
+      background-color: var(--header-bg-color);
+      color: var(--header-text-color);
+      font-weight: bold;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid #ccc;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <vscode-text-field name="promptName">Name</vscode-text-field>
   <br />
-  <vscode-text-field id="varName">Name</vscode-text-field>
-  <vscode-text-field id="varVal">Value</vscode-text-field>
-  <vscode-button style="position: relative; top: -12px" appearance="secondary" name="add-var" onclick="addVariable()"
-    >Add
-  </vscode-button>
-  <vscode-data-grid id="variables" aria-label="Basic">
-    <vscode-data-grid-row row-type="header">
-      <vscode-data-grid-cell cell-type="columnheader" grid-column="1">Name</vscode-data-grid-cell>
-      <vscode-data-grid-cell cell-type="columnheader" grid-column="2">Value</vscode-data-grid-cell>
-      <vscode-data-grid-cell cell-type="columnheader" grid-column="3">Delete</vscode-data-grid-cell>
-    </vscode-data-grid-row>
-  </vscode-data-grid>
-</label>
-<br />
-<label>
-  <vscode-checkbox id="useProjectIntegration" onclick="useProjectIntegrationFields(this)" class="ws-input" />
-  Use project integration settings in context file
-</label>
-<br />
-<vscode-text-field disabled="true" name="LLMModelName">Model</vscode-text-field>
-<br />
-<vscode-text-field disabled="true" name="topP">Top P</vscode-text-field>
-<br />
-<vscode-text-field disabled="true" name="topK">Top K</vscode-text-field>
-<br />
-<vscode-text-field disabled="true" name="temperature">Temperature</vscode-text-field>
-<br />
-<vscode-text-field disabled="true" name="maxTokens">Max Tokens</vscode-text-field>
-<br />
-<vscode-button appearance="primary" name="save-prompt" onclick="savePrompt()">Save</vscode-button>
+  <vscode-text-area name="promptDescription" rows="4" cols="50">Description</vscode-text-area>
+  <br />
+  <vscode-text-area name="context" rows="4" cols="50">Context</vscode-text-area>
+  <br />
+  <hr />
+  <label>
+    Variables
+    <br />
+    <vscode-text-field id="varName">Name</vscode-text-field>
+    <vscode-text-field id="varVal">Value</vscode-text-field>
+    <vscode-button style="position: relative; top: -12px" appearance="secondary" name="add-var" onclick="addVariable()">
+      Add
+    </vscode-button>
+    <vscode-data-grid id="variables" aria-label="Basic">
+      <vscode-data-grid-row row-type="header">
+        <vscode-data-grid-cell cell-type="columnheader" grid-column="1">Name</vscode-data-grid-cell>
+        <vscode-data-grid-cell cell-type="columnheader" grid-column="2">Value</vscode-data-grid-cell>
+        <vscode-data-grid-cell cell-type="columnheader" grid-column="3">Delete</vscode-data-grid-cell>
+      </vscode-data-grid-row>
+    </vscode-data-grid>
+  </label>
+  <br />
+  <hr />
+  <label>
+    <vscode-checkbox id="useProjectIntegration" onclick="useProjectIntegrationFields(this)" class="ws-input" />
+    Use project integration settings in context file
+  </label>
+  <br />
+  <vscode-text-field disabled="true" name="LLMModelName">Model</vscode-text-field>
+  <br />
+  <vscode-text-field disabled="true" name="topP">Top P</vscode-text-field>
+  <br />
+  <vscode-text-field disabled="true" name="topK">Top K</vscode-text-field>
+  <br />
+  <vscode-text-field disabled="true" name="temperature">Temperature</vscode-text-field>
+  <br />
+  <vscode-text-field disabled="true" name="maxTokens">Max Tokens</vscode-text-field>
+  <br />
+  <vscode-button appearance="primary" name="save-prompt" onclick="savePrompt()">Save</vscode-button>
+</body>
+</html>
