@@ -34,7 +34,7 @@ module.exports = class DigitalPlatform extends LlmServiceProvider {
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Window,
-        title: "Alita is getting prompts ...",
+        title: "Elitea is getting prompts ...",
         cancellable: false,
       },
       (progress) => {
