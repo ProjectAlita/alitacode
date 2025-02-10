@@ -15,7 +15,10 @@ function useProjectIntegrationFields(state) {
       document.getElementsByName(element)[0].value = integrationElementsArray[element];
     });
   } else {
-    elements.forEach((element) => document.getElementsByName(element)[0].setAttribute("disabled", "true"));
+    elements.forEach((element) => {
+      document.getElementsByName(element)[0].setAttribute("disabled", "true");
+      document.getElementsByName(element)[0].value = "";
+    });
   }
 }
 
@@ -61,6 +64,19 @@ function cleanUp() {
   document.getElementById("varVal").value = "";
   document.getElementById("useProjectIntegration").checked = false;
 }
+
+function validateAndSavePrompt() {
+  const promptName = document.getElementById("promptName").value.trim();
+  const promptNameError = document.getElementById("promptNameError");
+
+  if (!promptName) {
+    promptNameError.style.display = "block";
+  } else {
+    promptNameError.style.display = "none";
+    savePrompt();
+  }
+}
+
 
 function savePrompt() {
   const promptSettings = Object.create({});

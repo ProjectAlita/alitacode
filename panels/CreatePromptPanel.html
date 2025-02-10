@@ -30,21 +30,20 @@
       font-weight: bold;
     }
 
-    hr {
-      border: 0;
-      border-top: 1px solid #ccc;
-      margin: 20px 0;
-    }
+    .error {
+       color: red;
+       display: none;
+     }
   </style>
 </head>
 <body>
-  <vscode-text-field name="promptName">Name</vscode-text-field>
+  <vscode-text-field id="promptName" name="promptName">Name</vscode-text-field>
+  <span id="promptNameError" class="error">Prompt name cannot be empty.</span>
   <br />
   <vscode-text-area name="promptDescription" rows="4" cols="50">Description</vscode-text-area>
   <br />
   <vscode-text-area name="context" rows="4" cols="50">Context</vscode-text-area>
   <br />
-  <hr />
   <label>
     Variables
     <br />
@@ -62,7 +61,6 @@
     </vscode-data-grid>
   </label>
   <br />
-  <hr />
   <label>
     <vscode-checkbox id="useProjectIntegration" onclick="useProjectIntegrationFields(this)" class="ws-input" />
     Use project integration settings in context file
@@ -78,6 +76,6 @@
   <br />
   <vscode-text-field disabled="true" name="maxTokens">Max Tokens</vscode-text-field>
   <br />
-  <vscode-button appearance="primary" name="save-prompt" onclick="savePrompt()">Save</vscode-button>
+  <vscode-button appearance="primary" name="save-prompt" onclick="validateAndSavePrompt()">Save</vscode-button>
 </body>
 </html>
