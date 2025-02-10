@@ -1,13 +1,27 @@
 const vscode = acquireVsCodeApi();
 const basicElementsArray = ["promptName", "promptDescription", "context"];
 const integrationElementsArray = Object.create({});
-(integrationElementsArray["temperature"] = 0.8),
-  (integrationElementsArray["LLMModelName"] = "gpt-4"),
-  (integrationElementsArray["maxTokens"] = 1024),
-  (integrationElementsArray["topP"] = 40),
-  (integrationElementsArray["topK"] = 0.8);
+
+window.addEventListener("message", event => {
+  console.log("TEST LIST")
+  const message = event.data;
+  console.log(message);
+  console.log(message.settings);
+  console.log(message.command);
+
+  switch (message.command) {
+    case "populateFields":
+      const settings = message.settings;
+      Object.keys(settings).forEach(key => integrationElementsArray[key] = settings[key])
+  }
+});
+
 
 function useProjectIntegrationFields(state) {
+  console.log("trigger")
+  vscode.postMessage({
+    command: "getSettings"
+  });
   const elements = Object.keys(integrationElementsArray);
   if (!state.checked) {
     elements.forEach((element) => {
