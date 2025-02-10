@@ -42,6 +42,6 @@ module.exports = async function () {
     }
     fs.writeFileSync(path.join(workspacePath, promptLib, "./prompts.json"), JSON.stringify(prompts, null, 2));
   }
-  await vscode.commands.executeCommand("setContext", "alita.init", true);
+  await vscode.commands.executeCommand("setContext", "eliteacode.init", true);
   return await onConfigChange();
 };

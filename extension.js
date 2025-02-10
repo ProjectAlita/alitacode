@@ -18,7 +18,6 @@ const { COMMAND, EXTERNAL_PROMPTS_PROVIDERS } = require("./constants/index");
 const {
   addContext,
   addExample,
-  createPrompt,
   predict,
   addGoodPrediction,
   initAlita,
@@ -30,7 +29,7 @@ import { CreatePromptPanel } from "./panels/CreatePromptPanel";
 const OutputService = require("./services/output.service");
 
 async function activate(context) {
-  await vscode.commands.executeCommand("setContext", "alitacode.ExtentablePlatforms", EXTERNAL_PROMPTS_PROVIDERS);
+  await vscode.commands.executeCommand("setContext", "eliteacode.ExtentablePlatforms", EXTERNAL_PROMPTS_PROVIDERS);
   try {
     await onConfigChange();
   } catch (error) {

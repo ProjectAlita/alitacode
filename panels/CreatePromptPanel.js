@@ -35,6 +35,16 @@ export class CreatePromptPanel {
             await createPrompt(workspaceServicePrompts, message.promptSettings);
             vscode.window.showInformationMessage("Prompt saved!");
             return;
+          case "getSettings":
+            const settings = {
+              LLMModelName: vscode.workspace.getConfiguration().get("eliteacode.LLMModelName"),
+              topP: vscode.workspace.getConfiguration().get("eliteacode.topP"),
+              topK: vscode.workspace.getConfiguration().get("eliteacode.topK"),
+              temperature: vscode.workspace.getConfiguration().get("eliteacode.temperature"),
+              maxTokens: vscode.workspace.getConfiguration().get("eliteacode.maxTokens")
+            };
+            CreatePromptPanel.currentPanel._panel.webview.postMessage({ command: "populateFields", settings });
+            break;
         }
       },
       undefined,
@@ -73,6 +83,12 @@ export class CreatePromptPanel {
         </script>
         <script type="module" src="${webviewUri}"></script>
         ${htmlBody}
+        <script>
+          // Request settings when the webview is loaded
+          window.addEventListener('load', () => {
+            vscode.postMessage({ command: 'getSettings' });
+          });
+        </script>
     </body>
     </html>
     `;

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const AlitaServiceProvider = require("./alita.provider");
+const EliteaServiceProvider = require("./alita.provider");
 const CarrierServiceProvider = require("./carrier.provider");
 const OpenAIServiceProvider = require("./openai.provider");
 const AzureOpenAIProvider = require("./azure.provider");
@@ -20,7 +20,7 @@ const DigitalPlatform = require("./dp.provider");
 const LlmServiceProvider = require("./base.provider");
 
 module.exports = {
-  Alita: AlitaServiceProvider,
+  ELITEA: EliteaServiceProvider,
   Carrier: CarrierServiceProvider,
   OpenAI: OpenAIServiceProvider,
   DigitalPlatform: DigitalPlatform,

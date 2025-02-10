@@ -37,7 +37,7 @@ module.exports = class OutputService {
   static activate() {
     if (this._outputChannel) return;
 
-    this._outputChannel = vscode.window.createOutputChannel("Alita Code");
+    this._outputChannel = vscode.window.createOutputChannel("Elitea Code");
   }
 
   static getChannel() {
