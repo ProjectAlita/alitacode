@@ -91,6 +91,8 @@ module.exports = async function () {
               });
             } else if (answer.type == "prepend") {
               vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(`${answer.content}\n`), sel_start);
+            } else if (typeof answer === "string") {
+              vscode.window.showInformationMessage(answer);
             } else {
               vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(`\n${answer.content}`), sel_end);
             }
