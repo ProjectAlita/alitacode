@@ -1,13 +1,27 @@
 const vscode = acquireVsCodeApi();
 const basicElementsArray = ["promptName", "promptDescription", "context"];
 const integrationElementsArray = Object.create({});
-(integrationElementsArray["temperature"] = 0.8),
-  (integrationElementsArray["LLMModelName"] = "gpt-4"),
-  (integrationElementsArray["maxTokens"] = 1024),
-  (integrationElementsArray["topP"] = 40),
-  (integrationElementsArray["topK"] = 0.8);
+
+window.addEventListener("message", event => {
+  console.log("TEST LIST")
+  const message = event.data;
+  console.log(message);
+  console.log(message.settings);
+  console.log(message.command);
+
+  switch (message.command) {
+    case "populateFields":
+      const settings = message.settings;
+      Object.keys(settings).forEach(key => integrationElementsArray[key] = settings[key])
+  }
+});
+
 
 function useProjectIntegrationFields(state) {
+  console.log("trigger")
+  vscode.postMessage({
+    command: "getSettings"
+  });
   const elements = Object.keys(integrationElementsArray);
   if (!state.checked) {
     elements.forEach((element) => {
@@ -15,7 +29,10 @@ function useProjectIntegrationFields(state) {
       document.getElementsByName(element)[0].value = integrationElementsArray[element];
     });
   } else {
-    elements.forEach((element) => document.getElementsByName(element)[0].setAttribute("disabled", "true"));
+    elements.forEach((element) => {
+      document.getElementsByName(element)[0].setAttribute("disabled", "true");
+      document.getElementsByName(element)[0].value = "";
+    });
   }
 }
 
@@ -61,6 +78,19 @@ function cleanUp() {
   document.getElementById("varVal").value = "";
   document.getElementById("useProjectIntegration").checked = false;
 }
+
+function validateAndSavePrompt() {
+  const promptName = document.getElementById("promptName").value.trim();
+  const promptNameError = document.getElementById("promptNameError");
+
+  if (!promptName) {
+    promptNameError.style.display = "block";
+  } else {
+    promptNameError.style.display = "none";
+    savePrompt();
+  }
+}
+
 
 function savePrompt() {
   const promptSettings = Object.create({});

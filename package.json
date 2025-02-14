@@ -1,8 +1,8 @@
 {
   "name": "alitacode",
-  "displayName": "Alita Code",
+  "displayName": "ELITEA Code",
   "description": "Your Virtual Coding Assistant, to help you write better code faster",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "icon": "images/128x128.png",
   "publisher": "ProjectAlita",
   "engines": {
@@ -20,70 +20,70 @@
   "contributes": {
     "commands": [
       {
-        "command": "alitacode.predict",
-        "title": "Alita: Predict"
+        "command": "eliteacode.predict",
+        "title": "Predict"
       },
       {
-        "command": "alitacode.createPrompt",
-        "title": "Alita: Create Prompt"
+        "command": "eliteacode.createPrompt",
+        "title": "Create Prompt"
       },
       {
-        "command": "alitacode.addContext",
-        "title": "Alita: Extend Context"
+        "command": "eliteacode.addContext",
+        "title": "Extend Context"
       },
       {
-        "command": "alitacode.syncPrompts",
-        "title": "Alita: Sync External Prompts"
+        "command": "eliteacode.syncPrompts",
+        "title": "Sync External Prompts"
       },
       {
-        "command": "alitacode.initAlita",
-        "title": "Alita: Init"
+        "command": "eliteacode.initAlita",
+        "title": "Init"
       },
       {
-        "command": "alitacode.getAvailableAIModels",
-        "title": "Alita: Get available AI models from the server"
+        "command": "eliteacode.getAvailableAIModels",
+        "title": "Get available AI models from the server"
       }
     ],
     "menus": {
       "editor/context": [
         {
           "when": "editorFocus && !editorReadonly",
-          "submenu": "alitacode.submenu",
-          "group": "Alita"
+          "submenu": "eliteacode.submenu",
+          "group": "Elitea"
         }
       ],
-      "alitacode.submenu": [
+      "eliteacode.submenu": [
         {
-          "when": "editorHasSelection && editorFocus && !editorReadonly && alita.init",
-          "command": "alitacode.predict"
+          "when": "editorHasSelection && editorFocus && !editorReadonly && eliteacode.init",
+          "command": "eliteacode.predict"
         },
         {
-          "when": "editorFocus && !editorReadonly && alita.init && alitacode.LocalPrompts",
-          "command": "alitacode.createPrompt"
+          "when": "editorFocus && !editorReadonly && eliteacode.init && eliteacode.LocalPrompts",
+          "command": "eliteacode.createPrompt"
         },
         {
-          "when": "editorFocus && !alita.init && alitacode.LLMProvider != 'None'",
-          "command": "alitacode.initAlita"
+          "when": "editorFocus && !eliteacode.init && eliteacode.LLMProvider != 'None'",
+          "command": "eliteacode.initAlita"
         },
         {
-          "when": "editorHasSelection && editorFocus && !editorReadonly && alita.init && alitacode.LocalPrompts",
-          "command": "alitacode.addContext"
+          "when": "editorHasSelection && editorFocus && !editorReadonly && eliteacode.init && eliteacode.LocalPrompts",
+          "command": "eliteacode.addContext"
         },
         {
-          "when": "alita.init && alitacode.LLMProvider in alitacode.ExtentablePlatforms",
-          "command": "alitacode.syncPrompts"
+          "when": "eliteacode.init && eliteacode.LLMProvider in eliteacode.ExtentablePlatforms",
+          "command": "eliteacode.syncPrompts"
         }
       ]
     },
     "submenus": [
       {
-        "id": "alitacode.submenu",
-        "label": "Alita"
+        "id": "eliteacode.submenu",
+        "label": "Elitea"
       }
     ],
     "keybindings": [
       {
-        "command": "alitacode.predict",
+        "command": "eliteacode.predict",
         "key": "ctrl+shift+r"
       }
     ],
@@ -91,26 +91,26 @@
       {
         "title": "Main Settings",
         "properties": {
-          "alitacode.LLMServerUrl": {
+          "eliteacode.LLMServerUrl": {
             "order": 1,
             "type": "string",
             "default": "",
             "description": "URL to LLM service provider"
           },
-          "alitacode.LLMAuthToken": {
+          "eliteacode.LLMAuthToken": {
             "order": 2,
             "type": "string",
             "default": "",
             "pattern": "(^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]{86}$)",
             "patternErrorMessage": "Token has incorrect format"
           },
-          "alitacode.projectId": {
+          "eliteacode.projectId": {
             "order": 3,
             "type": "number",
             "default": 1,
             "description": "Project Id in Carrier, ignored for OpenAI and AI Dial"
           },
-          "alitacode.displayType": {
+          "eliteacode.displayType": {
             "order": 4,
             "type": "string",
             "default": "append",
@@ -122,20 +122,20 @@
             ],
             "description": "Select the default display mode for the predictions"
           },
-          "alitacode.verifySsl": {
+          "eliteacode.verifySsl": {
             "order": 5,
             "label": "Verify SSL",
             "type": "boolean",
             "default": true,
             "description": "Verify LLM service provider certificate"
           },
-          "alitacode.enable": {
+          "eliteacode.enable": {
             "order": 6,
             "type": "boolean",
             "default": true,
             "description": "Enable/disable this extension"
           },
-          "alitacode.debug": {
+          "eliteacode.debug": {
             "order": 10,
             "type": "boolean",
             "default": false,
@@ -146,26 +146,26 @@
       {
         "title": "Integration Settings",
         "properties": {
-          "alitacode.selectIntegration": {
+          "eliteacode.selectIntegration": {
             "order": 1,
             "type": "string",
             "default": "Please use [Click here to select] button",
             "enum": [
               "Please use [Click here to select] button"
             ],
-            "markdownDescription": "[Click here to select](command:alitacode.getAvailableAIModels)"
+            "markdownDescription": "[Click here to select](command:eliteacode.getAvailableAIModels)"
           },
-          "alitacode.LLMModelName": {
+          "eliteacode.LLMModelName": {
             "order": 2,
             "type": "string",
             "default": "",
             "markdownDescription": "Model name used for local prompts, this is deployment name, and it can be different from case to case"
           },
-          "alitacode.integrationName": {
+          "eliteacode.integrationName": {
             "order": 3,
             "type": "string"
           },
-          "alitacode.integrationUid": {
+          "eliteacode.integrationUid": {
             "order": 4,
             "type": "string",
             "default": "Integration UUID goes here",
@@ -176,13 +176,13 @@
       {
         "title": "Advanced Settings",
         "properties": {
-          "alitacode.customModelSize": {
+          "eliteacode.customModelSize": {
             "order": 1,
             "type": "number",
             "default": 4096,
             "description": "Type custom model's tokens size"
           },
-          "alitacode.maxTokens": {
+          "eliteacode.maxTokens": {
             "order": 2,
             "label": "Max Tokens default value",
             "type": "number",
@@ -191,7 +191,7 @@
             "maximum": 8096,
             "description": "Max tokens value for the model"
           },
-          "alitacode.temperature": {
+          "eliteacode.temperature": {
             "order": 3,
             "label": "Temperature default value",
             "type": "number",
@@ -200,7 +200,7 @@
             "maximum": 1,
             "description": "Temperature value for the model"
           },
-          "alitacode.topK": {
+          "eliteacode.topK": {
             "order": 4,
             "label": "Top K default value",
             "type": "number",
@@ -209,7 +209,7 @@
             "maximum": 40,
             "description": "Top K value for the model"
           },
-          "alitacode.topP": {
+          "eliteacode.topP": {
             "order": 5,
             "label": "Top P default value",
             "type": "number",
@@ -251,7 +251,7 @@
     "@types/vscode": "^1.78.0",
     "@vscode/test-electron": "^2.3.2",
     "@vscode/vsce": "^2.25.0",
-    "esbuild": "^0.19.5",
+    "esbuild": "^0.19.12",
     "eslint": "^8.41.0",
     "eslint-config-prettier": "^8.8.0",
     "glob": "^8.1.0",

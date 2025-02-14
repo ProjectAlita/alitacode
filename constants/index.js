@@ -32,7 +32,7 @@ module.exports = {
   },
   WORKSPACE: {
     EXTENSION: {
-      NAME: "alitacode",
+      NAME: "eliteacode",
       PARAM: {
         ENABLE: "enable",
         PROMPT_LIB: "promptLib",
@@ -55,18 +55,18 @@ module.exports = {
     },
   },
   COMMAND: {
-    INIT_ALITA: "alitacode.initAlita",
-    SYNC_PROMPTS: "alitacode.syncPrompts",
-    ADD_EXAMPLE: "alitacode.addExample",
-    ADD_CONTEXT: "alitacode.addContext",
-    CREATE_PROMPT: "alitacode.createPrompt",
-    PREDICT: "alitacode.predict",
+    INIT_ALITA: "eliteacode.initAlita",
+    SYNC_PROMPTS: "eliteacode.syncPrompts",
+    ADD_EXAMPLE: "eliteacode.addExample",
+    ADD_CONTEXT: "eliteacode.addContext",
+    CREATE_PROMPT: "eliteacode.createPrompt",
+    PREDICT: "eliteacode.predict",
     OPEN_SETTINGS: "workbench.action.openSettings",
-    ADD_GOOD_PREDICTION: "alitacode.addGoodPrediction",
-    GET_AVAILABLE_AI_MODELS: "alitacode.getAvailableAIModels",
+    ADD_GOOD_PREDICTION: "eliteacode.addGoodPrediction",
+    GET_AVAILABLE_AI_MODELS: "eliteacode.getAvailableAIModels",
   },
   TEXT: {
-    ALITA_ACTIVATED: "Alita was activated! Please specify configuration",
+    ALITA_ACTIVATED: "Elitea was activated! Please specify configuration",
     ENTER_PROMPT_NAME: "Enter prompt name",
     ENTER_PROMPT_DESCRIPTION: "Enter prompt description",
     ENTER_PROMPT_CONTEXT: "Enter context",
@@ -77,6 +77,6 @@ module.exports = {
   MESSAGE: {
     CONTEXT_WAS_ADDED: (label) => `Context was added to ${label} prompt!`,
   },
-  EXTERNAL_PROMPTS_PROVIDERS: ["Alita", "DigitalPlatform"],
+  EXTERNAL_PROMPTS_PROVIDERS: ["ELITEA", "DigitalPlatform"],
   LOCAL_PROMPTS_BLOCKERS: ["DigitalPlatform"],
 };

@@ -33,7 +33,7 @@ module.exports = class WorkspaceService {
       LLMauthToken: workspace.getConfiguration(WORKSPACE.EXTENSION.NAME).get(WORKSPACE.EXTENSION.PARAM.LLM_TOKEN),
       LLMProvider: workspace
         .getConfiguration(WORKSPACE.EXTENSION.NAME)
-        .get(WORKSPACE.EXTENSION.PARAM.LLM_PROVIDER_TYPE, "Alita"),
+        .get(WORKSPACE.EXTENSION.PARAM.LLM_PROVIDER_TYPE, "ELITEA"),
       DisplayType: workspace.getConfiguration(WORKSPACE.EXTENSION.NAME).get(WORKSPACE.EXTENSION.PARAM.DISPLAY_TYPE),
       LLMmodelName: workspace.getConfiguration(WORKSPACE.EXTENSION.NAME).get(WORKSPACE.EXTENSION.PARAM.LLM_MODEL_NAME),
       DEFAULT_TOKENS: workspace

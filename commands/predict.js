@@ -33,7 +33,6 @@ module.exports = async function () {
   const promptsList = await workspaceService.updatePrompts();
   // renderring list
   const entities = [...promptsList]
-    .filter((it) => !it.external)
     .map((prompt) => ({
       label: prompt.label.replace(/(_prompt|_datasource)$/, ""),
       description: prompt.description,
@@ -59,7 +58,7 @@ module.exports = async function () {
   vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Window,
-      title: "Alita prediction...",
+      title: "Elitea prediction...",
       cancellable: false,
     },
     (progress) => {
