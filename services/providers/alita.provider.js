@@ -171,8 +171,8 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
         : this.workspaceService.getWorkspaceConfig().DisplayType;
     // escape $ sign as later it try to read it as template variable
     const resp_data = response.data.response
-      ? response.data.response.replace(/\$/g, "\\$")
-      : response.data.messages.map((message) => message.content.replace(/\$/g, "\\$")).join("\n");
+      ? response.data.response
+      : response.data.messages.map((message) => message.content).join("\n");
     return {
       content: resp_data,
       type: display_type,
