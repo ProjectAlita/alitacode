@@ -36,8 +36,10 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
     this.getApplicationsUrl = `${apiBasePath}/applications/applications/prompt_lib/${this.config.projectID}`;
     this.getApplicationDetailUrl = `${apiBasePath}/applications/application/prompt_lib/${this.config.projectID}`;
     this.updatePromptsUrl = `${apiBasePath}/prompt_lib/version/prompt_lib/${this.config.projectID}`;
-    this.predictUrl = `${apiBasePath}/prompt_lib/predict/prompt_lib/${this.config.projectID}`;
-    this.getEmbeddingsUrl = `${apiBasePath}/integrations/integrations/default/${this.config.projectID}`;
+    this.predictUrl = `${apiBasePath}/applications/predict_llm/prompt_lib/${this.config.projectID}`;
+    this.applicationPredictUrl = `${apiBasePath}/applications/predict/prompt_lib/${this.config.projectID}`
+    //this.getEmbeddingsUrl = `${apiBasePath}/integrations/integrations/default/${this.config.projectID}`;
+    this.getConfigurationsUrl = `${apiBasePath}/configurations/configurations/${this.config.projectID}?include_shared=true&section=llm`;
     this.sumilarityUrl = `${apiBasePath}/datasources/deduplicate/prompt_lib/${this.config.projectID}`;
     this.chatWithDatasourceUrl = `${apiBasePath}/datasources/predict/prompt_lib/${this.config.projectID}`;
     this.stopApplicationTaskUrl = `${apiBasePath}/applications/task/prompt_lib/${this.config.projectID}`;
@@ -78,142 +80,71 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
     var prompt_data = {};
     var display_type = "append";
     var response = {};
-    if (template.external) {
-      prompt_data = template.label.endsWith("_datasource")
-        ? { input: prompt }
-        : {
-            model_settings: this.getModelSettings(),
-            user_input: prompt,
-            chat_history: template.chat_history,
-          };
-      if (template.userSettings) {
-        display_type = template.userSettings.display_type ? template.userSettings.display_type : "append";
-
-        if (template.userSettings.temperature) {
-          prompt_data.temperature = template.userSettings.temperature;
-        }
-        if (template.userSettings.maxTokens) {
-          prompt_data.max_tokens = template.userSettings.maxTokens;
-          prompt_data.max_decode_steps = template.userSettings.maxTokens;
-        }
-        if (template.userSettings.topP) {
-          prompt_data.top_p = template.userSettings.topP;
-        }
-        if (template.userSettings.topK) {
-          prompt_data.top_k = template.userSettings.topK;
-        }
-        if (template.userSettings.modelName) {
-          prompt_data.model_name = template.userSettings.LLMModelName;
-        }
-      }
-
-      // datasource by default
-      let base_url = this.chatWithDatasourceUrl;
-      let prompt_id = template.prompt_id;
-      if (!template.label.endsWith("_datasource")) {
-        // prompt predict
-        base_url = this.predictUrl;
-        let version_details_response = await this.getPromptDetail(prompt_id, template.version.name);
-        let external_variables = version_details_response.version_details.variables.reduce((acc, item) => {
-          acc[item.name] = item.value;
-          return acc;
-        }, {});
-        if (external_variables) {
-          let configured_variables = await this.handleVars(external_variables);
-          prompt_data.variables = Object.entries(configured_variables ? configured_variables : []).map(
-            ([key, value]) => ({ name: key, value: value })
-          );
-        }
-        prompt_id = template.version.id;
-      }
-
-      // datasouce predict
-      response = await this.request(base_url + "/" + prompt_id)
-        .method("POST")
-        .headers({ "Content-Type": "application/json" })
-        .body(prompt_data)
-        .auth(this.authType, this.authToken)
-        .send();
-    } else {
-      if (!prompt_template) {
-        prompt_template = await this.getPromptTemplate(config, template.template);
-      }
+    var resp_data = {}
+    if (!template) {
       prompt_data = {
-        project_id: config.projectID,
-        model_settings: {
-          model: {
-            model_name: prompt_template.model_name ? prompt_template.model_name : config.LLMmodelName,
-            integration_uid: prompt_template.integration_id ? prompt_template.integration_id : config.integrationID,
-          },
-          temperature: prompt_template.temperature ? prompt_template.temperature : config.temperature,
-          max_tokens: prompt_template.maxTokens ? prompt_template.maxTokens : config.maxTokens,
-          top_p: prompt_template.topP ? prompt_template.topP : config.topP,
-          top_k: prompt_template.topK ? prompt_template.topK : config.topK,
-          stream: true,
+        llm_settings: {
+          temperature: config.temperature,
+          max_tokens: config.maxTokens,
+          top_p: config.topP,
+          top_k: config.topK,
+          model_name: config.LLMmodelName
         },
-        context: prompt_template.context,
         user_input: prompt,
-        variables: Object.entries(
-          prompt_template.variables ? prompt_template.variables : this.getTemplateDefaults()
-        ).map(([key, value]) => ({ name: key, value: value })),
-        chat_history: prompt_template.chat_history,
-      };
+        chat_history: []
+      }
       response = await this.request(this.predictUrl)
         .method("POST")
         .headers({ "Content-Type": "application/json" })
         .body(prompt_data)
         .auth(this.authType, this.authToken)
         .send();
+        resp_data = response.data.result.chat_history.filter((chat) => chat.role == "assistant" )[0].content
+    } else {
+
+      let version_details_response = await this.getAppllicationDetail(template.id);
+      let external_variables = version_details_response.version_details.variables.reduce((acc, item) => {
+        acc[item.name] = item.value;
+        return acc;
+      }, {});
+      let configured_variables
+      if (external_variables) {
+        configured_variables = await this.handleVars(external_variables);
+      }
+      prompt_data = {
+        project_id: config.projectID,
+        model_settings: {
+          model: {
+            model_name: config.LLMmodelName,
+            integration_uid: config.integrationID,
+          },
+          temperature: config.temperature,
+          max_tokens: config.maxTokens,
+          top_p: config.topP,
+          top_k: config.topK,
+          stream: true,
+        },
+        user_input: prompt,
+        variables: Object.entries(configured_variables ? configured_variables : []).map(
+          ([key, value]) => ({ name: key, value: value })
+        ),
+        chat_history: [],
+      };
+      response = await this.request(this.applicationPredictUrl.concat(`/${template.version.id}`))
+        .method("POST")
+        .headers({ "Content-Type": "application/json" })
+        .body(prompt_data)
+        .auth(this.authType, this.authToken)
+        .send();
+        resp_data = response.data.chat_history.filter((chat) => chat.role == "assistant" )[0].content
     }
-    display_type =
-      prompt_template && prompt_template.display_type
-        ? prompt_template.display_type
-        : this.workspaceService.getWorkspaceConfig().DisplayType;
+    display_type = this.workspaceService.getWorkspaceConfig().DisplayType;
     // escape $ sign as later it try to read it as template variable
-    const resp_data = response.data.response
-      ? response.data.response
-      : response.data.messages.map((message) => message.content).join("\n");
+    
     return {
       content: resp_data,
       type: display_type,
     };
-  }
-
-  async syncPrompts() {
-    const prompts = [];
-    let promptData = [];
-    let datasourceData = [];
-    promptData = (await this.getPrompts({})).map((prompt) => ({ ...prompt, name: prompt.name + "_prompt" }));
-    datasourceData = (await this.getDatasources({})).map((ds) => ({ ...ds, name: ds.name + "_datasource" }));
-    prompts.push(...promptData);
-    prompts.push(...datasourceData);
-
-    const _addedPrompts = [];
-    for (var i = 0; i < prompts.length; i++) {
-      var prompt = prompts[i];
-      var tags = prompt.tags.map((tag) => tag.name.toLowerCase());
-      if (tags.includes("code")) {
-        _addedPrompts.push(prompt.name);
-        await this.addPrompt(
-          prompt.name,
-          prompt.description ? prompt.description : "",
-          { prompt_id: prompt.id, integration_uid: prompt.integration_uid },
-          [],
-          {},
-          true
-        );
-      }
-    }
-    const workspaceConfig = this.workspaceService.getWorkspaceConfig();
-    var promptsMapping = await this.workspaceService.readContent(
-      path.join(workspaceConfig.workspacePath, workspaceConfig.promptLib, "./prompts.json"),
-      true
-    );
-    for (const [key, value] of Object.entries(promptsMapping)) {
-      if (!_addedPrompts.includes(key) && value.external) {
-        await this.removePrompt(key);
-      }
-    }
   }
 
   async getPromptDetail(promptId, version_name) {
@@ -377,7 +308,7 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
   }
 
   async getEmbeddings() {
-    const response = await this.request(this.getEmbeddingsUrl)
+    const response = await this.request(this.getConfigurationsUrl)
       .method("GET")
       .headers({ "Content-Type": "application/json" })
       .auth(this.authType, this.authToken)
