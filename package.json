@@ -40,10 +40,6 @@
         {
           "when": "editorHasSelection && editorFocus && !editorReadonly",
           "command": "eliteacode.predict"
-        },
-        {
-          "when": "editorFocus && !editorReadonly && eliteacode.LocalPrompts",
-          "command": "eliteacode.createPrompt"
         }
       ]
     },

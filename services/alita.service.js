@@ -59,6 +59,7 @@ module.exports = class AlitaService {
         return `${fnDesc} not supported by this LLM Provider`;
       }
     } catch (error) {
+      console.log(error)
       await Notifications.showError({ error, message: `Elitea Code ${functionName}`, showOutputButton: true });
       return "You need to configure LLM Provider first";
     }
@@ -82,21 +83,6 @@ module.exports = class AlitaService {
     return this.invokeMethod("getModelSettings", "Get model settings");
   }
 
-  async getPrompts({ page = 0, query }) {
-    return await this.invokeMethod("getPrompts", "List prompts", { page, query });
-  }
-
-  async getPromptDetail(promptId) {
-    return await this.invokeMethod("getPromptDetail", "Get prompt detail", promptId);
-  }
-
-  async getDatasourceDetail(id) {
-    return await this.invokeMethod("getDatasourceDetail", "Get prompt detail", id);
-  }
-
-  async getDatasources() {
-    return await this.invokeMethod("getDatasources", "List datasources");
-  }
 
   async getApplicationDetail(id) {
     return await this.invokeMethod("getAppllicationDetail", "Get application detail", id);
@@ -106,16 +92,16 @@ module.exports = class AlitaService {
     return await this.invokeMethod("getApplications", "List applications");
   }
 
+  async createConversation(name) {
+    return await this.invokeMethod("createConversation", "Create conversation", name);
+  }
+
   async getDeployments() {
     return await this.invokeMethod("getDeployments", "Get deployments");
   }
 
   async stopApplicationTask(taskId) {
     return await this.invokeMethod("stopApplicationTask", "Stop application task", taskId);
-  }
-
-  async stopDatasourceTask(taskId) {
-    return await this.invokeMethod("stopDatasourceTask", "Stop datasource task", taskId);
   }
 
   async chat(params) {

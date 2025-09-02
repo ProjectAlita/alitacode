@@ -29,21 +29,14 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
     const apiBasePath = removeTrailingSlash(this.config.LLMserverURL).concat(apiPath);
     this.codeTagId = -1;
     this.getCodeTagUrl = `${apiBasePath}/prompt_lib/tags/prompt_lib/${this.config.projectID}`;
-    this.getPromptsUrl = `${apiBasePath}/prompt_lib/prompts/prompt_lib/${this.config.projectID}`;
-    this.getPromptDetailUrl = `${apiBasePath}/prompt_lib/prompt/prompt_lib/${this.config.projectID}`;
-    this.getDatasourcesUrl = `${apiBasePath}/datasources/datasources/prompt_lib/${this.config.projectID}`;
-    this.getDatasourceDetailUrl = `${apiBasePath}/datasources/datasource/prompt_lib/${this.config.projectID}`;
     this.getApplicationsUrl = `${apiBasePath}/applications/applications/prompt_lib/${this.config.projectID}`;
     this.getApplicationDetailUrl = `${apiBasePath}/applications/application/prompt_lib/${this.config.projectID}`;
-    this.updatePromptsUrl = `${apiBasePath}/prompt_lib/version/prompt_lib/${this.config.projectID}`;
     this.predictUrl = `${apiBasePath}/applications/predict_llm/prompt_lib/${this.config.projectID}`;
-    this.applicationPredictUrl = `${apiBasePath}/applications/predict/prompt_lib/${this.config.projectID}`
-    //this.getEmbeddingsUrl = `${apiBasePath}/integrations/integrations/default/${this.config.projectID}`;
+    this.applicationPredictUrl = `${apiBasePath}/applications/predict/prompt_lib/${this.config.projectID}`;
     this.getConfigurationsUrl = `${apiBasePath}/configurations/configurations/${this.config.projectID}?include_shared=true&section=llm`;
     this.sumilarityUrl = `${apiBasePath}/datasources/deduplicate/prompt_lib/${this.config.projectID}`;
-    this.chatWithDatasourceUrl = `${apiBasePath}/datasources/predict/prompt_lib/${this.config.projectID}`;
+    this.getConversationUrl = `${apiBasePath}/chat/conversations/prompt_lib/${this.config.projectID}`;
     this.stopApplicationTaskUrl = `${apiBasePath}/applications/task/prompt_lib/${this.config.projectID}`;
-    this.stopDatasourceTaskUrl = `${apiBasePath}/datasources/task/prompt_lib/${this.config.projectID}`;
     this.getDeploymentsUrl = `${apiBasePath}/integrations/integrations/default/${this.config.projectID}?section=ai`;
   }
 
@@ -99,7 +92,7 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
         .body(prompt_data)
         .auth(this.authType, this.authToken)
         .send();
-        resp_data = response.data.result.chat_history.filter((chat) => chat.role == "assistant" )[0].content
+      resp_data = response.data.result.chat_history.filter((chat) => chat.role == "assistant")[0].content
     } else {
 
       let version_details_response = await this.getAppllicationDetail(template.id);
@@ -136,26 +129,15 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
         .body(prompt_data)
         .auth(this.authType, this.authToken)
         .send();
-        resp_data = response.data.chat_history.filter((chat) => chat.role == "assistant" )[0].content
+      resp_data = response.data.chat_history.filter((chat) => chat.role == "assistant")[0].content
     }
     display_type = this.workspaceService.getWorkspaceConfig().DisplayType;
     // escape $ sign as later it try to read it as template variable
-    
+
     return {
       content: resp_data,
       type: display_type,
     };
-  }
-
-  async getPromptDetail(promptId, version_name) {
-    const response = await this.request(
-      this.getPromptDetailUrl + "/" + promptId + (version_name ? "/" + version_name : "")
-    )
-      .method("GET")
-      .headers({ "Content-Type": "application/json" })
-      .auth(this.authType, this.authToken)
-      .send();
-    return response.data;
   }
 
   async getCodeTagId() {
@@ -178,44 +160,6 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
   async checkIfHasCodeTag() {
     await this.getCodeTagId();
     return this.codeTagId && this.codeTagId !== -1;
-  }
-
-  async getPrompts() {
-    const response = await this.request(this.getPromptsUrl, {
-      params: {
-        offset: 0,
-        limit: 1000,
-      },
-    })
-      .method("GET")
-      .headers({ "Content-Type": "application/json" })
-      .auth(this.authType, this.authToken)
-      .send();
-    return response.data.rows.filter((row) => row.tags.some((tag) => tag.name === "code")) || [];
-  }
-
-  async getDatasourceDetail(id) {
-    const response = await this.request(this.getDatasourceDetailUrl + "/" + id)
-      .method("GET")
-      .headers({ "Content-Type": "application/json" })
-      .auth(this.authType, this.authToken)
-      .send();
-    return response.data;
-  }
-
-  async getDatasources() {
-    const response = await this.request(this.getDatasourcesUrl, {
-      params: {
-        // remove after BE alignment
-        limit: 1000,
-        offset: 0,
-      },
-    })
-      .method("GET")
-      .headers({ "Content-Type": "application/json" })
-      .auth(this.authType, this.authToken)
-      .send();
-    return response.data.rows.filter((row) => row.tags.some((tag) => tag.name === "code")) || [];
   }
 
   async getAppllicationDetail(id) {
@@ -242,28 +186,18 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
   }
 
   async chat({ prompt_id, datasource_id, user_input, chat_history }) {
-    let url;
-    let body;
-
-    if (prompt_id) {
-      url = this.predictUrl + "/" + prompt_id;
-      body = {
-        user_input,
-        chat_history,
-      };
-    } else if (datasource_id) {
-      url = this.chatWithDatasourceUrl + "/" + datasource_id;
-      body = {
-        input: user_input,
-        chat_history,
-      };
-    } else {
-      url = this.predictUrl;
-      body = {
-        user_input,
-        chat_history,
-        model_settings: this.getModelSettings(),
-      };
+    const url = this.predictUrl;
+    const config = this.workspaceService.getWorkspaceConfig();
+    const body = {
+      llm_settings: {
+        temperature: config.temperature,
+        max_tokens: config.maxTokens,
+        top_p: config.topP,
+        top_k: config.topK,
+        model_name: config.LLMmodelName
+      },
+      user_input,
+      chat_history
     }
 
     const response = await this.request(url)
@@ -272,12 +206,8 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
       .body(body)
       .auth(this.authType, this.authToken)
       .send();
-    return datasource_id
-      ? {
-          ...response.data,
-          content: response.data.response,
-        }
-      : response.data.messages && response.data.messages[0];
+    return response.data.chat_history
+      && response.data.chat_history.filter((chat) => chat.role == "assistant")[0].content
   }
 
   async stopApplicationTask(taskId) {
@@ -289,6 +219,37 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
     return response.status;
   }
 
+  async createConversation(conversationName) {
+    const response = await this.request(this.getConversationUrl)
+      .method("GET")
+      .headers({ "Content-Type": "application/json" })
+      .auth(this.authType, this.authToken)
+      .send();
+
+    const existingConversation = response.data.rows.find((conv) => conv.name === conversationName);
+    if (existingConversation) {
+      await this.request(this.getConversationUrl + "/" + existingConversation.id)
+        .method("DELETE")
+        .headers({ "Content-Type": "application/json" })
+        .auth(this.authType, this.authToken)
+        .send();
+    }
+    const body = {
+      name: conversationName,
+      is_private: true,
+      participants: []
+    }
+
+    const createdConversationResponse = await this.request(this.getConversationUrl)
+      .method("POST")
+      .headers({ "Content-Type": "application/json" })
+      .auth(this.authType, this.authToken)
+      .body(body)
+      .send();
+    return createdConversationResponse.data;
+
+  }
+
   async stopDatasourceTask(taskId) {
     const response = await this.request(this.stopDatasourceTaskUrl + "/" + taskId)
       .method("DELETE")
@@ -296,15 +257,6 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
       .auth(this.authType, this.authToken)
       .send();
     return response.status;
-  }
-
-  async getDeployments() {
-    const response = await this.request(this.getDeploymentsUrl)
-      .method("GET")
-      .headers({ "Content-Type": "application/json" })
-      .auth(this.authType, this.authToken)
-      .send();
-    return response.data;
   }
 
   async getEmbeddings() {
