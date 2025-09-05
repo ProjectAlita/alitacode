@@ -29,7 +29,7 @@ module.exports = class AlitaServiceProvider extends CarrierServiceProvider {
     const apiBasePath = removeTrailingSlash(this.config.LLMserverURL).concat(apiPath);
     this.codeTagId = -1;
     this.getCodeTagUrl = `${apiBasePath}/prompt_lib/tags/prompt_lib/${this.config.projectID}`;
-    this.getApplicationsUrl = `${apiBasePath}/applications/applications/prompt_lib/${this.config.projectID}`;
+    this.getApplicationsUrl = `${apiBasePath}/applications/applications/prompt_lib/${this.config.projectID}?agents_type=classic`;
     this.getApplicationDetailUrl = `${apiBasePath}/applications/application/prompt_lib/${this.config.projectID}`;
     this.predictUrl = `${apiBasePath}/applications/predict_llm/prompt_lib/${this.config.projectID}`;
     this.applicationPredictUrl = `${apiBasePath}/applications/predict/prompt_lib/${this.config.projectID}`;

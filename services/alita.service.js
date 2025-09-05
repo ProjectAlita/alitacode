@@ -59,7 +59,6 @@ module.exports = class AlitaService {
         return `${fnDesc} not supported by this LLM Provider`;
       }
     } catch (error) {
-      console.log(error)
       await Notifications.showError({ error, message: `Elitea Code ${functionName}`, showOutputButton: true });
       return "You need to configure LLM Provider first";
     }
