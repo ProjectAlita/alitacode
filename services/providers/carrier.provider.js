@@ -22,7 +22,7 @@ module.exports = class CarrierServiceProvider extends LlmServiceProvider {
     this.getPromptsUrl = `${this.config.LLMserverURL}/prompts/prompts/default/${this.config.projectID}`;
     this.updatePromptsUrl = `${this.config.LLMserverURL}/prompts/prompts`;
     this.predictUrl = `${this.config.LLMserverURL}/prompts/predict/default/${this.config.projectID}`;
-    this.getEmbeddingsUrl = `${this.config.LLMserverURL}/embeddings/embedding/default/${this.config.projectID}`;
+    this.getConfigurationsUrl = `${this.config.LLMserverURL}/embeddings/embedding/default/${this.config.projectID}`;
     this.sumilarityUrl = `${this.config.LLMserverURL}/embeddings/similarity/default/${this.config.projectID}`;
     this.authToken = this.config.LLMauthToken;
     this.authType = "Bearer";
@@ -54,7 +54,7 @@ module.exports = class CarrierServiceProvider extends LlmServiceProvider {
 
   async getEmbeddings() {
     try {
-      const response = await this.request(this.getEmbeddingsUrl)
+      const response = await this.request(this.getConfigurationsUrl)
         .method("GET")
         .headers({ "Content-Type": "application/json" })
         .auth(this.authType, this.authToken)
@@ -63,36 +63,6 @@ module.exports = class CarrierServiceProvider extends LlmServiceProvider {
     } catch (ex) {
       console.log(ex);
       return "Error";
-    }
-  }
-
-  async syncPrompts() {
-    const prompts = await this.getPrompts();
-    const _addedPrompts = [];
-    for (var i = 0; i < prompts.length; i++) {
-      var prompt = prompts[i];
-      var tags = prompt.tags.map((tag) => tag.tag.toLowerCase());
-      if (tags.includes("code")) {
-        _addedPrompts.push(prompt.name);
-        await this.addPrompt(
-          prompt.name,
-          prompt.description ? prompt.description : "",
-          { prompt_id: prompt.id, integration_uid: prompt.integration_uid },
-          [],
-          {},
-          true
-        );
-      }
-    }
-    const workspaceConfig = this.workspaceService.getWorkspaceConfig();
-    var promptsMapping = await this.workspaceService.readContent(
-      path.join(workspaceConfig.workspacePath, workspaceConfig.promptLib, "./prompts.json"),
-      true
-    );
-    for (const [key, value] of Object.entries(promptsMapping)) {
-      if (!_addedPrompts.includes(key) && value.external) {
-        await this.removePrompt(key);
-      }
     }
   }
 

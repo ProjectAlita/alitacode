@@ -40,7 +40,7 @@ module.exports = class AlitaService {
         this.serviceProvider = new llmServierProvider[newProvier]();
         this.currentProvider = newProvier;
         this.init_done = 0;
-        this.integrationData = undefined;
+        this.configurationData = undefined;
       }
     } catch (ex) {
       console.log(ex);
@@ -59,7 +59,7 @@ module.exports = class AlitaService {
         return `${fnDesc} not supported by this LLM Provider`;
       }
     } catch (error) {
-      await Notifications.showError({ error, message: `Alita Code ${functionName}`, showOutputButton: true });
+      await Notifications.showError({ error, message: `Elitea Code ${functionName}`, showOutputButton: true });
       return "You need to configure LLM Provider first";
     }
   }
@@ -69,7 +69,7 @@ module.exports = class AlitaService {
       this.checkLLMConfig();
       return await this.serviceProvider.predict(template, prompt, prompt_template);
     } catch (error) {
-      await Notifications.showError({ error, message: "Alita is not able to connect", showOutputButton: true });
+      await Notifications.showError({ error, message: "Elitea is not able to connect", showOutputButton: true });
       return "You need to configure LLM Provider first";
     }
   }
@@ -82,21 +82,6 @@ module.exports = class AlitaService {
     return this.invokeMethod("getModelSettings", "Get model settings");
   }
 
-  async getPrompts({ page = 0, query }) {
-    return await this.invokeMethod("getPrompts", "List prompts", { page, query });
-  }
-
-  async getPromptDetail(promptId) {
-    return await this.invokeMethod("getPromptDetail", "Get prompt detail", promptId);
-  }
-
-  async getDatasourceDetail(id) {
-    return await this.invokeMethod("getDatasourceDetail", "Get prompt detail", id);
-  }
-
-  async getDatasources() {
-    return await this.invokeMethod("getDatasources", "List datasources");
-  }
 
   async getApplicationDetail(id) {
     return await this.invokeMethod("getAppllicationDetail", "Get application detail", id);
@@ -106,16 +91,16 @@ module.exports = class AlitaService {
     return await this.invokeMethod("getApplications", "List applications");
   }
 
+  async createConversation(name) {
+    return await this.invokeMethod("createConversation", "Create conversation", name);
+  }
+
   async getDeployments() {
     return await this.invokeMethod("getDeployments", "Get deployments");
   }
 
   async stopApplicationTask(taskId) {
     return await this.invokeMethod("stopApplicationTask", "Stop application task", taskId);
-  }
-
-  async stopDatasourceTask(taskId) {
-    return await this.invokeMethod("stopDatasourceTask", "Stop datasource task", taskId);
   }
 
   async chat(params) {
@@ -127,64 +112,61 @@ module.exports = class AlitaService {
   }
 
   async getAIModelNames() {
-    this.integrationData = await this.getEmbeddings();
+    this.configurationData = await this.getEmbeddings();
     const array = [];
-    this.integrationData.forEach((entry) => {
-      if (entry.settings && Array.isArray(entry.settings.models)) {
-        entry.settings.models.forEach((model) => {
-          if (model.name && entry.name) {
-            array.push({ [entry.config.name]: model.name });
-          }
-        });
-      }
-    });
+    if (this.configurationData.shared && Array.isArray(this.configurationData.shared.items)) {
+      this.configurationData.shared.items.forEach((model) => {
+        if (model.data.name && model.alita_title) {
+          array.push({ [model.alita_title]: model.data.name });
+        }
+      });
+    }
     return array;
   }
 
   async getAIModelUid(integrationConfigName, isUsedCashedData) {
-    const data = isUsedCashedData ? this.integrationData : await this.getEmbeddings();
-    return data
-      .filter((integration) => integration.config.name === integrationConfigName)
-      .map((integration) => integration.uid);
+    const data = isUsedCashedData ? this.configurationData : await this.getEmbeddings();
+    return data.shared.items
+      .filter((configuration) => configuration.alita_title === integrationConfigName)
+      .map((configuration) => configuration.uuid);
   }
 
   async getAIModelIntegrationName(integrationConfigName, isUsedCashedData) {
-    const data = isUsedCashedData ? this.integrationData : await this.getEmbeddings();
-    return data
-      .filter((integration) => integration.config.name === integrationConfigName)
-      .map((integration) => integration.name);
+    const data = isUsedCashedData ? this.configurationData : await this.getEmbeddings();
+    return data.shared.items
+      .filter((configuration) => configuration.alita_title === integrationConfigName)
+      .map((configuration) => configuration.data.name);
   }
 
   async getEmbeddings() {
     return await this.invokeMethod("getEmbeddings", "Get available integrations");
   }
 
+
   async getAIModelNames() {
     const data = await this.getEmbeddings();
     const array = [];
-    data.forEach((entry) => {
-      if (entry.settings && Array.isArray(entry.settings.models)) {
-        entry.settings.models.forEach((model) => {
-          if (model.name && entry.name) {
-            array.push({ [entry.config.name]: model.name });
-          }
-        });
-      }
-    });
+    if (data.shared && Array.isArray(data.shared.items)) {
+      data.shared.items.forEach((model) => {
+        if (model.data.name && model.alita_title) {
+          array.push({ [model.alita_title]: model.data.name });
+        }
+      });
+    }
     return array;
   }
 
   async getAIModelUid(integrationConfigName) {
     const data = await this.getEmbeddings();
-    return data
-      .filter((integration) => integration.config.name === integrationConfigName)
-      .map((integration) => integration.uid);
+    return data.shared.items
+      .filter((configuration) => configuration.alita_title === integrationConfigName)
+      .map((configuration) => configuration.uuid);
   }
 
   async getAIModelIntegrationName(integrationConfigName) {
     const data = await this.getEmbeddings();
-    return data
-      .filter((integration) => integration.config.name === integrationConfigName)
-      .map((integration) => integration.name);
+    return data.shared.items
+      .filter((configuration) => configuration.alita_title === integrationConfigName)
+      .map((configuration) => configuration.data.name);
   }
 };

@@ -17,36 +17,31 @@ const { alitaService, workspaceService, windowService } = require("../services")
 
 module.exports = async function () {
   alitaService.checkLLMConfig();
-  if (alitaService.init_done === 0) {
-    try {
-      await alitaService.serviceProvider.init();
-      alitaService.init_done = 1;
-    } catch (ex) {
-      alitaService.init_done = 0;
-      await vscode.window.showErrorMessage(
-        `Alita is not able to connect to ${alitaService.serviceProvider.getPromptsUrl}`
-      );
-      return;
-    }
-  }
-
-  const promptsList = await workspaceService.updatePrompts();
+  const applicationList = await alitaService.getApplications({});
   // renderring list
-  const entities = [...promptsList]
-    .map((prompt) => ({
-      label: prompt.label.replace(/(_prompt|_datasource)$/, ""),
-      description: prompt.description,
-      iconPath: new vscode.ThemeIcon(
-        prompt.label.endsWith("_datasource") ? "database" : prompt.external ? "terminal" : "remote-explorer"
-      ),
-      full_name: prompt.label,
+  let entities = []
+  entities.push({
+    label: "No agent",
+    description: "",
+    iconPath: "terminal",
+    full_name: "",
+  });
+  [...applicationList]
+    .forEach((application) => entities.push({
+      label: application.name,
+      description: application.description,
+      iconPath: new vscode.ThemeIcon("remote-explorer"),
+      full_name: application.label,
     }));
-  let selection = await windowService.showQuickPick([...entities]);
-  selection = [...promptsList].find((prompt) => prompt.label === selection.full_name);
-  if (!selection) return;
-  // select required version
-  if (!selection.label.endsWith("_datasource") && selection.external) {
-    var prompt_details_response = await alitaService.getPromptDetail(selection.prompt_id);
+  let selection = await windowService.showQuickPick([...entities], {
+    activeItem: entities[entities.length - 1]
+  });
+  selection = [...applicationList].find((application) => application.label === selection.full_name);
+  if (!selection) {
+    
+  } else {
+    // select required version
+    var prompt_details_response = await alitaService.getApplicationDetail(selection.id);
 
     // if prompt has 2+ versions - show them
     selection.version =
@@ -54,7 +49,8 @@ module.exports = async function () {
         ? prompt_details_response.versions[0]
         : await handleVersions(prompt_details_response.versions);
   }
-
+  
+  
   vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Window,

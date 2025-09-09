@@ -24,7 +24,7 @@ module.exports = async function () {
     await workspaceService.updateEmbeddings();
   } catch (e) {
     await vscode.window.showErrorMessage(
-      `Alita is not able to connec to ${alitaService.serviceProvider.getEmbeddingsUrl}`
+      `Alita is not able to connec to ${alitaService.serviceProvider.getConfigurationsUrl}`
     );
   }
 };

@@ -24,22 +24,6 @@
         "title": "Predict"
       },
       {
-        "command": "eliteacode.createPrompt",
-        "title": "Create Prompt"
-      },
-      {
-        "command": "eliteacode.addContext",
-        "title": "Extend Context"
-      },
-      {
-        "command": "eliteacode.syncPrompts",
-        "title": "Sync External Prompts"
-      },
-      {
-        "command": "eliteacode.initAlita",
-        "title": "Init"
-      },
-      {
         "command": "eliteacode.getAvailableAIModels",
         "title": "Get available AI models from the server"
       }
@@ -54,24 +38,8 @@
       ],
       "eliteacode.submenu": [
         {
-          "when": "editorHasSelection && editorFocus && !editorReadonly && eliteacode.init",
+          "when": "editorHasSelection && editorFocus && !editorReadonly",
           "command": "eliteacode.predict"
-        },
-        {
-          "when": "editorFocus && !editorReadonly && eliteacode.init && eliteacode.LocalPrompts",
-          "command": "eliteacode.createPrompt"
-        },
-        {
-          "when": "editorFocus && !eliteacode.init && eliteacode.LLMProvider != 'None'",
-          "command": "eliteacode.initAlita"
-        },
-        {
-          "when": "editorHasSelection && editorFocus && !editorReadonly && eliteacode.init && eliteacode.LocalPrompts",
-          "command": "eliteacode.addContext"
-        },
-        {
-          "when": "eliteacode.init && eliteacode.LLMProvider in eliteacode.ExtentablePlatforms",
-          "command": "eliteacode.syncPrompts"
         }
       ]
     },
@@ -241,7 +209,7 @@
     "@vscode/webview-ui-toolkit": "^1.4.0",
     "axios": "^1.6.8",
     "form-data": "^4.0.0",
-    "squirrelly": "7.9.2",
+    "squirrelly": "^9.1.0",
     "yaml": "^2.4.1"
   },
   "devDependencies": {
@@ -251,7 +219,7 @@
     "@types/vscode": "^1.78.0",
     "@vscode/test-electron": "^2.3.2",
     "@vscode/vsce": "^2.25.0",
-    "esbuild": "^0.19.12",
+    "esbuild": "0.25.9",
     "eslint": "^8.41.0",
     "eslint-config-prettier": "^8.8.0",
     "glob": "^8.1.0",

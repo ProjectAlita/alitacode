@@ -71,10 +71,6 @@ module.exports = class LlmServiceProvider {
     throw new Error("Not implemented");
   }
 
-  async syncPrompts() {
-    return true;
-  }
-
   async getEmbeddings() {
     throw new Error("Not implemented");
   }
