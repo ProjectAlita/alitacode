@@ -36,7 +36,7 @@ module.exports = async function () {
   let selection = await windowService.showQuickPick([...entities], {
     activeItem: entities[entities.length - 1]
   });
-  selection = [...applicationList].find((application) => application.label === selection.full_name);
+  selection = [...applicationList].find((application) => application.name === selection.label);
   if (!selection) {
     
   } else {
