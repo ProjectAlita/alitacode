@@ -76,7 +76,8 @@ module.exports = async function () {
               vscode.workspace.openTextDocument({ language: languageId }).then((doc) => {
                 vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside, true).then((editor) => {
                   editor.edit((editBuilder) => {
-                    editBuilder.insert(new vscode.Position(0, 0), answer.content);
+                    const escapedContent = answer.content.replace(/\$/g, "\$");
+                    editBuilder.insert(new vscode.Position(0, 0), escapedContent);
                   });
                 });
               });
